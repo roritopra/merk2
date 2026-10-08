@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { queryClient } from '@/lib/query-client';
 import { supabase } from '@/lib/supabase';
+import { recordarTienda } from '@/features/tiendas/mutations';
 import { keys } from './keys';
 import type { Item } from './schema';
 
@@ -21,17 +22,53 @@ export function useCreateLista(hogarId: string | undefined, userId: string | und
   });
 }
 
-export function useAddItem(listaId: string) {
+export function useAddItem(listaId: string, hogarId: string | undefined) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (nombre: string) => {
+    mutationFn: async (input: { nombre: string; tiendaId: string | null }) => {
       const { error } = await supabase.from('items').insert({
         lista_id: listaId,
-        nombre: nombre.trim(),
+        nombre: input.nombre.trim(),
+        tienda_id: input.tiendaId,
       });
       if (error) throw error;
+      if (input.tiendaId && hogarId) {
+        await recordarTienda(hogarId, input.nombre, input.tiendaId);
+      }
     },
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: keys.items(listaId) });
+    },
+  });
+}
+
+export function useAssignTienda(listaId: string, hogarId: string | undefined) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { item: Item; tiendaId: string | null }) => {
+      const { error } = await supabase
+        .from('items')
+        .update({ tienda_id: input.tiendaId })
+        .eq('id', input.item.id);
+      if (error) throw error;
+      if (input.tiendaId && hogarId) {
+        await recordarTienda(hogarId, input.item.nombre, input.tiendaId);
+      }
+    },
+    onMutate: async (input: { item: Item; tiendaId: string | null }) => {
+      await qc.cancelQueries({ queryKey: keys.items(listaId) });
+      const previo = qc.getQueryData<Item[]>(keys.items(listaId));
+      qc.setQueryData<Item[]>(keys.items(listaId), (actual) =>
+        (actual ?? []).map((it) =>
+          it.id === input.item.id ? { ...it, tienda_id: input.tiendaId } : it
+        )
+      );
+      return { previo };
+    },
+    onError: (_err, _input, contexto) => {
+      if (contexto?.previo) qc.setQueryData(keys.items(listaId), contexto.previo);
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: keys.items(listaId) });
     },
   });

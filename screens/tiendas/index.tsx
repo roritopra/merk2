@@ -1,19 +1,20 @@
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet } from 'react-native';
-import { Link } from 'expo-router';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import { Button, Card, Input, Label, TextField } from 'heroui-native';
 
 import { Text, View } from '@/components/Themed';
-import { signOut, useSession } from '@/lib/auth';
-import { useHogar, useListas } from '@/features/listas/queries';
-import { useCreateLista } from '@/features/listas/mutations';
+import { useSession } from '@/lib/auth';
+import { useHogar } from '@/features/listas/queries';
+import { useTiendas } from '@/features/tiendas/queries';
+import { useCreateTienda, useDeleteTienda } from '@/features/tiendas/mutations';
 
-export function ListasScreen() {
+export function TiendasScreen() {
   const session = useSession();
   const userId = session.data?.user.id;
   const hogar = useHogar(userId);
-  const listas = useListas(hogar.data?.id);
-  const crear = useCreateLista(hogar.data?.id, userId);
+  const tiendas = useTiendas(hogar.data?.id);
+  const crear = useCreateTienda(hogar.data?.id, userId);
+  const borrar = useDeleteTienda(hogar.data?.id);
   const [nombre, setNombre] = useState('');
 
   if (session.isPending || hogar.isPending) {
@@ -44,14 +45,14 @@ export function ListasScreen() {
     <View style={styles.container}>
       <Card>
         <Card.Body>
-          <Card.Title>{hogar.data?.nombre ?? 'Mis listas'}</Card.Title>
-          <Card.Description>Crear una lista nueva</Card.Description>
+          <Card.Title>Tus tiendas</Card.Title>
+          <Card.Description>Se usan para agrupar cada lista.</Card.Description>
         </Card.Body>
         <Card.Footer style={styles.form}>
           <TextField>
             <Label>Nombre</Label>
             <Input
-              placeholder="Ej: Mercado semanal"
+              placeholder="Ej: D1"
               value={nombre}
               onChangeText={setNombre}
               onSubmitEditing={guardar}
@@ -59,45 +60,45 @@ export function ListasScreen() {
             />
           </TextField>
           <Button variant="primary" onPress={guardar}>
-            <Button.Label>Crear</Button.Label>
+            <Button.Label>Agregar tienda</Button.Label>
           </Button>
         </Card.Footer>
       </Card>
-      {crear.isError && <Text style={styles.error}>No se pudo crear la lista.</Text>}
-      <Button variant="ghost" onPress={() => signOut()}>
-        <Button.Label>Cerrar sesión</Button.Label>
-      </Button>
+      {crear.isError && <Text style={styles.error}>No se pudo crear la tienda.</Text>}
 
-      {listas.isPending ? (
+      {tiendas.isPending ? (
         <ActivityIndicator style={styles.loader} />
-      ) : listas.isError ? (
+      ) : tiendas.isError ? (
         <View style={styles.center}>
-          <Text>No se pudieron cargar las listas.</Text>
-          <Button variant="secondary" onPress={() => listas.refetch()}>
+          <Text>No se pudieron cargar las tiendas.</Text>
+          <Button variant="secondary" onPress={() => tiendas.refetch()}>
             <Button.Label>Reintentar</Button.Label>
           </Button>
         </View>
       ) : (
         <FlatList
-          data={listas.data ?? []}
+          data={tiendas.data ?? []}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
+          keyboardShouldPersistTaps="handled"
           ListEmptyComponent={
             <View style={styles.center}>
-              <Text>No hay listas todavía. Crea la primera arriba.</Text>
+              <Text>Sin tiendas todavía. Agrega la primera arriba.</Text>
             </View>
           }
           renderItem={({ item }) => (
-            <Link href={`/lista/${item.id}`} asChild>
-              <Pressable style={styles.row}>
-                <View style={styles.rowText}>
-                  <Text style={styles.rowTitle}>{item.nombre}</Text>
-                  <Text style={styles.rowSub}>
-                    {item.estado === 'abierta' ? 'Abierta' : 'Cerrada'}
-                  </Text>
-                </View>
-              </Pressable>
-            </Link>
+            <Card variant="secondary">
+              <Card.Body style={styles.row}>
+                <Card.Title>{item.nombre}</Card.Title>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onPress={() => borrar.mutate(item.id)}
+                >
+                  <Button.Label>Borrar</Button.Label>
+                </Button>
+              </Card.Body>
+            </Card>
           )}
         />
       )}
@@ -127,21 +128,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   row: {
-    borderWidth: 1,
-    borderColor: '#e2e2e2',
-    borderRadius: 12,
-    padding: 14,
-  },
-  rowText: {
-    gap: 2,
-  },
-  rowTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  rowSub: {
-    fontSize: 13,
-    opacity: 0.6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   error: {
     color: '#b00020',

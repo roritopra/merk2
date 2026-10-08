@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, TextInput } from 'react-native';
-import { Button, Card } from 'heroui-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+import { Button, Card, FieldError, Input, Label, TextField } from 'heroui-native';
 
 import { Text, View } from '@/components/Themed';
 import { signIn, signUp } from '@/lib/auth';
@@ -48,25 +48,29 @@ export function SesionScreen() {
           </Card.Description>
         </Card.Body>
         <Card.Footer style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Correo"
-            value={correo}
-            onChangeText={setCorreo}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Contraseña (mínimo 6)"
-            value={clave}
-            onChangeText={setClave}
-            secureTextEntry
-            onSubmitEditing={enviar}
-            returnKeyType="done"
-          />
-          {error && <Text style={styles.error}>{error}</Text>}
+          <TextField isRequired>
+            <Label>Correo</Label>
+            <Input
+              placeholder="tucorreo@ejemplo.com"
+              value={correo}
+              onChangeText={setCorreo}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+          </TextField>
+          <TextField isRequired>
+            <Label>Contraseña</Label>
+            <Input
+              placeholder="Mínimo 6 caracteres"
+              value={clave}
+              onChangeText={setClave}
+              secureTextEntry
+              onSubmitEditing={enviar}
+              returnKeyType="done"
+            />
+          </TextField>
+          {error && <FieldError>{error}</FieldError>}
           {aviso && <Text style={styles.aviso}>{aviso}</Text>}
           <Button variant="primary" onPress={enviar}>
             {cargando ? (
@@ -101,17 +105,6 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-  },
-  error: {
-    color: '#b00020',
   },
   aviso: {
     color: '#0a7ea4',
