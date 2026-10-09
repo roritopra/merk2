@@ -31,6 +31,12 @@
       "skillPath": "plugins/expo/skills/eas-app-stores/SKILL.md",
       "computedHash": "5e6e23df7a7d88aa72bc5dee63bc059e174f044ce46e5df4faee5a872f547cee"
     },
+    "expo-animation": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/expo/skills/expo-animation/SKILL.md",
+      "computedHash": "8f37108472fb5bcaa9978049864a09861c1e4a1980dc13c46b317865452300ab"
+    },
     "expo-data-fetching": {
       "source": "expo/skills",
       "sourceType": "github",
