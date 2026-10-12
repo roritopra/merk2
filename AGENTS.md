@@ -1,5 +1,9 @@
 This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
 
+## Project memory
+
+At session start, read `docs/project.md`, `docs/state.md`, and `docs/decisions.md` — they hold the context, current status, and binding decisions. Update `docs/state.md` when finishing a unit of work and append to `docs/decisions.md` for anything future-you (or a future AI) must not break.
+
 ## Expo has changed — do not trust your training data
 
 Expo ships breaking changes every SDK release. APIs you remember are likely renamed, moved, or removed. Before writing any code that touches an Expo, EAS, or React Native API:
