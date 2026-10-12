@@ -4,6 +4,7 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Button, Card, Input, Label, Select, TextField } from 'heroui-native';
 
 import { Text, View } from '@/components/Themed';
+import { theme } from '@/constants/theme';
 import { useSession } from '@/lib/auth';
 import { useHogar, useItems } from '@/features/listas/queries';
 import { useAddItem, useAssignTienda, useCerrarLista, useToggleItem } from '@/features/listas/mutations';
@@ -254,8 +255,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     borderWidth: 1,
-    borderColor: '#e2e2e2',
-    borderRadius: 12,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.card,
     padding: 12,
   },
   toggle: {
@@ -275,6 +276,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   error: {
-    color: '#b00020',
+    color: theme.colors.error,
   },
 });

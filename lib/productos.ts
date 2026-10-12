@@ -1,3 +1,8 @@
 export function normalizarProducto(nombre: string): string {
-  return nombre.trim().toLowerCase().replace(/\s+/g, ' ');
+  return nombre
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ');
 }

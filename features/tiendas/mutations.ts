@@ -4,9 +4,8 @@ import { supabase } from '@/lib/supabase';
 import { normalizarProducto } from '@/lib/productos';
 import { keysTiendas } from './keys';
 
-export function useCreateTienda(hogarId: string | undefined, userId: string | undefined) {
+export function useCreateTienda(hogarId: string | undefined) {
   const qc = useQueryClient();
-  void userId;
   return useMutation({
     mutationFn: async (nombre: string) => {
       const { error } = await supabase.from('tiendas').insert({

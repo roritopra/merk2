@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import { Button, Card, Input, Label, TextField } from 'heroui-native';
 
 import { Text, View } from '@/components/Themed';
+import { theme } from '@/constants/theme';
 import { useSession } from '@/lib/auth';
 import { useHogar } from '@/features/listas/queries';
 import { useTiendas } from '@/features/tiendas/queries';
@@ -13,7 +14,7 @@ export function TiendasScreen() {
   const userId = session.data?.user.id;
   const hogar = useHogar(userId);
   const tiendas = useTiendas(hogar.data?.id);
-  const crear = useCreateTienda(hogar.data?.id, userId);
+  const crear = useCreateTienda(hogar.data?.id);
   const borrar = useDeleteTienda(hogar.data?.id);
   const [nombre, setNombre] = useState('');
 
@@ -133,6 +134,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   error: {
-    color: '#b00020',
+    color: theme.colors.error,
   },
 });

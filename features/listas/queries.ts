@@ -4,36 +4,18 @@ import { supabase } from '@/lib/supabase';
 import { keys } from './keys';
 import type { Hogar, Item, Lista } from './schema';
 
-async function ensureHogar(userId: string): Promise<Hogar> {
-  const { data: miembro, error: miembroError } = await supabase
-    .from('hogar_miembros')
-    .select('hogares(*)')
-    .eq('user_id', userId)
-    .limit(1)
-    .maybeSingle();
-  if (miembroError) throw miembroError;
-  const existente = (miembro as { hogares: Hogar } | null)?.hogares;
-  if (existente) return existente;
-
-  const { data: hogar, error: hogarError } = await supabase
-    .from('hogares')
-    .insert({ nombre: 'Mi hogar', created_by: userId })
-    .select()
-    .single();
-  if (hogarError) throw hogarError;
-  const nuevo = hogar as Hogar;
-
-  const { error: unionError } = await supabase
-    .from('hogar_miembros')
-    .insert({ hogar_id: nuevo.id, user_id: userId });
-  if (unionError) throw unionError;
-  return nuevo;
+async function ensureHogar(): Promise<Hogar> {
+  // RPC atómico (ver supabase/migrations/20261012_ensure_hogar_rpc.sql):
+  // devuelve el hogar existente o crea hogar + membresía en una transacción.
+  const { data, error } = await supabase.rpc('ensure_hogar');
+  if (error) throw error;
+  return data as Hogar;
 }
 
 export function useHogar(userId: string | undefined) {
   return useQuery({
     queryKey: keys.hogar(userId ?? ''),
-    queryFn: () => ensureHogar(userId as string),
+    queryFn: () => ensureHogar(),
     enabled: Boolean(userId),
     staleTime: Infinity,
   });

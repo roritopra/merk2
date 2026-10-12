@@ -4,6 +4,7 @@ import { Link } from 'expo-router';
 import { Button, Card, Input, Label, TextField } from 'heroui-native';
 
 import { Text, View } from '@/components/Themed';
+import { theme } from '@/constants/theme';
 import { signOut, useSession } from '@/lib/auth';
 import { useHogar, useListas } from '@/features/listas/queries';
 import { useCreateLista } from '@/features/listas/mutations';
@@ -128,8 +129,8 @@ const styles = StyleSheet.create({
   },
   row: {
     borderWidth: 1,
-    borderColor: '#e2e2e2',
-    borderRadius: 12,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.card,
     padding: 14,
   },
   rowText: {
@@ -144,6 +145,6 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   error: {
-    color: '#b00020',
+    color: theme.colors.error,
   },
 });

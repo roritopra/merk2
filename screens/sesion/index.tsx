@@ -3,6 +3,7 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Button, Card, FieldError, Input, Label, TextField } from 'heroui-native';
 
 import { Text, View } from '@/components/Themed';
+import { theme } from '@/constants/theme';
 import { signIn, signUp } from '@/lib/auth';
 
 type Modo = 'entrar' | 'crear';
@@ -107,6 +108,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   aviso: {
-    color: '#0a7ea4',
+    color: theme.colors.info,
   },
 });

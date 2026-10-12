@@ -4,7 +4,11 @@ import { queryClient } from '@/lib/query-client';
 import { supabase } from '@/lib/supabase';
 import { recordarTienda } from '@/features/tiendas/mutations';
 import { keys } from './keys';
-import type { Item } from './schema';
+import type { Item, Lista } from './schema';
+
+function tempId(): string {
+  return `temp-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
 
 export function useCreateLista(hogarId: string | undefined, userId: string | undefined) {
   return useMutation({
@@ -16,7 +20,27 @@ export function useCreateLista(hogarId: string | undefined, userId: string | und
       });
       if (error) throw error;
     },
-    onSuccess: () => {
+    onMutate: async (nombre: string) => {
+      const key = keys.listas(hogarId ?? '');
+      await queryClient.cancelQueries({ queryKey: key });
+      const previo = queryClient.getQueryData<Lista[]>(key);
+      const optimista: Lista = {
+        id: tempId(),
+        hogar_id: hogarId ?? '',
+        nombre: nombre.trim(),
+        estado: 'abierta',
+        created_by: userId ?? '',
+        created_at: new Date().toISOString(),
+      };
+      queryClient.setQueryData<Lista[]>(key, (actual) => [optimista, ...(actual ?? [])]);
+      return { previo };
+    },
+    onError: (_err, _input, contexto) => {
+      if (contexto?.previo) {
+        queryClient.setQueryData(keys.listas(hogarId ?? ''), contexto.previo);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: keys.listas(hogarId ?? '') });
     },
   });
@@ -36,7 +60,29 @@ export function useAddItem(listaId: string, hogarId: string | undefined) {
         await recordarTienda(hogarId, input.nombre, input.tiendaId);
       }
     },
-    onSuccess: () => {
+    onMutate: async (input: { nombre: string; tiendaId: string | null }) => {
+      const key = keys.items(listaId);
+      await qc.cancelQueries({ queryKey: key });
+      const previo = qc.getQueryData<Item[]>(key);
+      const optimista: Item = {
+        id: tempId(),
+        lista_id: listaId,
+        nombre: input.nombre.trim(),
+        cantidad: null,
+        unidad: null,
+        tienda_id: input.tiendaId,
+        comprado: false,
+        comprado_por: null,
+        comprado_at: null,
+        created_at: new Date().toISOString(),
+      };
+      qc.setQueryData<Item[]>(key, (actual) => [...(actual ?? []), optimista]);
+      return { previo };
+    },
+    onError: (_err, _input, contexto) => {
+      if (contexto?.previo) qc.setQueryData(keys.items(listaId), contexto.previo);
+    },
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: keys.items(listaId) });
     },
   });
