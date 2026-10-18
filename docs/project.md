@@ -1,9 +1,7 @@
 # merk2 — memoria del proyecto
 
-App móvil colaborativa: lista del mercado organizada **por tienda y por hogar**,
-para que varias personas compren a la vez sin olvidar nada.
-Documento de producto: `app-mercado-documento-mvp.md` (manda sobre este archivo
-si hay contradicción).
+App móvil colaborativa multi-hogar: lista del mercado organizada **por tienda y por hogar**, con asistente de IA encarnado por la **Mascota** (dictado por voz y pegado inteligente de WhatsApp) para que varias personas compren a la vez sin olvidar nada.
+Documento maestro de producto (PRD v1.0): `docs/prd.md` (manda sobre este archivo si hay contradicción).
 
 ## Stack
 

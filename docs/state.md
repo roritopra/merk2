@@ -4,15 +4,11 @@ Actualizar al cerrar cada unidad de trabajo: qué quedó hecho, qué sigue, qué
 bloquea. La IA debe leer este archivo al iniciar sesión, junto con
 `docs/project.md` y `docs/decisions.md`.
 
-## Última actualización: 2026-10-12
+## Última actualización: 2026-10-18
 
-Fase 1 (lista básica) **completa y pulida**: cuenta, crear lista, agregar
-productos, tachar — todo con optimistic UI. Estructura auditada y limpia.
-Commit `a6c5137` en `main`, sincronizado con `origin/main`.
-
-Fase 2 (tiendas) **casi completa**: crear/borrar tiendas, asignar, vista
-agrupada por tienda con conteo de pendientes, memoria producto→tienda con
-sugerencia al agregar.
+- **PRD Oficial v1.0 completado y documentado en `docs/prd.md`** tras sesión de descubrimiento de producto (21 decisiones cerradas). `app-mercado-documento-mvp.md` ahora apunta a `docs/prd.md`.
+- Prototipo técnico actual tiene Fase 1 (lista básica) y gran parte de Fase 2 (tiendas básicas) funcionando bajo la estructura previa de 3 tabs.
+- Con el nuevo PRD v1.0 se define la hoja de ruta en 4 fases (ver sección 5.1 de `docs/prd.md`) para alinear el desarrollo funcional con el trabajo de Branding, Personalidad (Mascota IA) y UI/UX.
 
 ## Pendiente (orden sugerido)
 

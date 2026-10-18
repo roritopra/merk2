@@ -4,6 +4,17 @@ Registro vivo. Nueva decisión → nueva entrada arriba con fecha. Lo táctico y
 pequeño no entra aquí, solo lo que una IA futura (o tú en 3 meses) necesitaría
 para no romper nada.
 
+## 2026-10-18 — PRD v1.0 (`docs/prd.md`) como fuente única de verdad de producto
+
+Se realizó sesión completa de Product Discovery con el dueño del producto.
+Decisiones vinculantes que rigen el rediseño y evolución de merk2:
+- **Multi-hogar**: un usuario puede pertenecer a múltiples hogares y cambiar entre ellos desde Inicio. Invitación vía link de WhatsApp + código corto de 6 caracteres. Permisos democráticos en operación diaria, pero solo el creador (`admin`) puede eliminar el hogar o expulsar miembros.
+- **Onboarding en 4 pasos**: identidad, perfilamiento (conocer al usuario sin paywall), crear/unirse a hogar, y creación libre de tiendas locales (sin imponer cadenas nacionales que no existen en municipios; se guarda data para analítica futura de popularidad).
+- **Nueva arquitectura de navegación (4 destinos)**: `Inicio` (antes Listas), `Mascota / Hub de IA` (botón central con la mascota de la marca), `Historial` y `Perfil` (que integra hogar y tiene tuerca en el header para entrar a Ajustes/Configuración estilo TikTok/Symmetry). `Tiendas` deja de ser un tab inferior y se gestiona contextualmente desde las listas y desde Perfil/Hogar.
+- **Mascota IA (Voz y Texto de WhatsApp)**: grabación de voz en vivo (máx. 60s) y pegado de texto con previsualización obligatoria, cruce híbrido con `producto_memoria` para ahorrar tokens, creación asistida si el usuario menciona una tienda nueva, y cuota de 15 usos/día por hogar. Fase 1 del Hub IA solo crea listas nuevas; Fase 2 agregará/editará sobre listas abiertas.
+- **Reasignación y Cierre de Lista**: mantener presionado un producto permite moverlo de tienda eligiendo entre *"Mover solo por hoy"* (no toca `producto_memoria`) o *"Asignar también para futuras listas"*. Al cerrar lista con pendientes, el usuario elige entre *"Descartar pendientes"* o *"Marcar todos como comprados"*.
+- **UI adaptativa por plataforma**: navegación nativa con *Liquid Glass* en iOS moderno y estética propia de marca en Android.
+
 ## 2026-10-12 — Memoria en el repo, no Codebase Memory MCP ni Obsidian
 
 Se evaluó Codebase Memory MCP (índice de código) vs Obsidian (memoria curada).
